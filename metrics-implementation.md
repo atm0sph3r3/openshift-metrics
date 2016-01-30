@@ -46,17 +46,21 @@ is listed below.
 is not using persistent storage, "USE_PERSISTENT_STORAGE" is set to false when processing the template, as shown below. Be sure to
 set the hostname to a resolvable hostname. It can simply be a hostname similar to one used for an application.
 
+```
     oc process -f metrics.yaml -v \
       HAWKULAR_METRICS_HOSTNAME=hawkular-metrics.cloudapps.rhc-ose.labs.redhat.com/,USE_PERSISTENT_STORAGE=false \
       | oc create -f -
+```
 
 8. When the deployer is complete and cassandra, hawkular, and cassandra-cluster pods are running, edit the master config file to include
  the URL for the Hawkular metrics that was used for the "HAWKULAR_METRICS_HOSTNAME" in the step above.
 
+```
     /etc/origin/master-config.yaml 
 
     assetConfig:
     ...
     metricsPublicURL: "https://hawkular-metrics.cloudapps.rhc-ose.labs.redhat.com/hawkular/metrics"
+```
 
 9. Restart the OpenShift master in order for the chnage to take place.
