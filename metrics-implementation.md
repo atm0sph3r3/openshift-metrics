@@ -1,12 +1,12 @@
-== Introduction
+## Introduction
 This is an implementation guide for enable cluster metrics. For demonstration purposes, this guide uses ephemeral
 storage for metrics. It also uses a self-signed certificate for Hawkular metrics. Neither of these are required and
  would not be used in a production environment.
 
-== Prerequisites
+## Prerequisites
 A cluster adminstration user is required in order to setup metrics for the cluster.
 
-== Metrics Setup
+## Metrics Setup
 1. Move into the "openshift-infra" namespace
     oc project openshift-infra
 2. A service account is required for the metrics deployer. The deployer will deploy and configure metrics. 
