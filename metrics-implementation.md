@@ -7,20 +7,22 @@ storage for metrics. It also uses a self-signed certificate for Hawkular metrics
 A cluster adminstration user account is required in order to setup metrics for the cluster.
 
 ## Metrics Setup
-*  Move into the "openshift-infra" namespace
+*  Move into the `openshift-infra` namespace
 ```
  oc project openshift-infra
 ```
 * A service account is required for the metrics deployer. The deployer will deploy and configure metrics. 
 ```
-    oc create -f - <<EOF
-    apiVersion: v1
-    kind: ServiceAccount
-    metadata:
-      name: metrics-deployer
-    secrets:
+oc create -f - <<-EOF
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: metrics-deployer
+  labels:
+    openshift-infra: metrics
+secrets:
     - name: metrics-deployer
-    EOF
+EOF
 ```
 * The metrics deployer must have the ability to edit the `openshift-infra` project. Allow the service account created
  above to create edit the project as follows.
@@ -48,12 +50,25 @@ set the hostname to a resolvable hostname. It can simply be a hostname similar t
 
 ```
 oc process -f metrics.yaml -v \
-  HAWKULAR_METRICS_HOSTNAME=hawkular-metrics.cloudapps.rhc-ose.labs.redhat.com/ \
-  ,USE_PERSISTENT_STORAGE=false \
-  | oc create -f -
+HAWKULAR_METRICS_HOSTNAME=hawkular-metrics.cloudapps.rhc-ose.labs.redhat.com\
+,USE_PERSISTENT_STORAGE=false \
+| oc create -f -
+```
+Following creation of the deployer pod, something similar to the following should be shown.
+```
+pod "metrics-deployer-xrg9w" created
+```
+Once the deployer pod has completed running, it will launch additional pods that will be response for dispalying and processing metrics.
+The following shows an example of the pods that will start following completion of the deployer.
+```
+NAME                         READY     STATUS      RESTARTS   AGE
+hawkular-cassandra-1-g4k1d   0/1       Pending     0          33s
+hawkular-metrics-v4jlm       0/1       Pending     0          35s
+heapster-fz5w8               1/1       Running     0          35s
+metrics-deployer-faliw       0/1       Completed   0          2m
 ```
 * When the deployer is complete and cassandra, hawkular, and cassandra-cluster pods are running, edit the master config file to include
- the URL for the Hawkular metrics that was used for the "HAWKULAR_METRICS_HOSTNAME" in the step above.
+ the URL for the Hawkular metrics that was used for the `HAWKULAR_METRICS_HOSTNAME` in the step above.
 
 ```
 /etc/origin/master-config.yaml 
