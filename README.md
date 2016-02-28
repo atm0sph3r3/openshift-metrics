@@ -34,7 +34,7 @@ service accounts requires the `cluster-reader` role.
 ```
 oadm policy add-cluster-role-to-user cluster-reader system:serviceaccount:openshift-infra:heapster
 ```
-* Even though a self-signed certificate will be used, a secret is still required in order for certificates to be generated.
+* Even though a self-signed certificate will be used, a secret is still required to be added.
 ```
  oc secrets new metrics-deployer nothing=/dev/null
 ```
@@ -44,6 +44,7 @@ is listed below.
 ```
 /usr/share/ansible/openshift-ansible/roles/openshift_examples/files/examples/v1.1/infrastructure-templates/enterprise/metrics-deployer.yaml
 ```
+Depending on the version of OpenShift, the directory may be slightly different.
 * `HAWKULAR_METRICS_HOSTNAME` is the only required environment variable (required in the template). As this will metrics deployment 
 is not using persistent storage, `USE_PERSISTENT_STORAGE` is set to false when processing the template, as shown below. Be sure to
 set the hostname to a resolvable hostname. It can simply be a hostname similar to one used for an application.
