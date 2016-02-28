@@ -92,3 +92,18 @@ In order to remedy this, visit the Hawkular Metrics URL that was entered into th
 In this example, the URL was `https://hawkular-metrics.cloudapps.rhc-ose.labs.redhat.com/hawkular/metrics`.
 
 If you're still receiving an error after doing this, export the certificate from the page and manually import it into the browser.
+
+## Permenant Storage
+This introduction uses ephemeral storage, that is, if a pod is deleted, any data is deleted with it. If you want to use persistent storage, 
+a few slight modifications will be required. 
+* When processing the template, do not override the persistent storage variable. Instead processing the template will look more like the following:
+```
+oc process -f metrics.yaml -v \
+HAWKULAR_METRICS_HOSTNAME=hawkular-metrics.cloudapps.rhc-ose.labs.redhat.com\
+| oc create -f -
+```
+If you changed the template instead of passsing in a variable, be sure to change that instead.
+
+* A persistent volume (PV) will be required. The deployer will created persistent volume claims (PVC) that will automatically be bound.
+ In order for the PVC to be bound to the PV, concurrency (writing) and resources will need to match. A sample PV file is included in 
+this repository (metrics_pv.json). 
